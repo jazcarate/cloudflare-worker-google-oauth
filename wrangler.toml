@@ -1,0 +1,7 @@
+name = "{{ project-name }}"
+type = "javascript"
+
+account_id = ""
+kv_namespaces = [ 
+         { binding = "authTokens", id = "" }
+]
