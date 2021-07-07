@@ -51,7 +51,7 @@ A more detail explanation of how Google Sign in should behave can be found in Go
 
 ### Setup wrangler
 
-1. Clone this template: `wrangler generate [a name] https://github.com/apiumhub/cloudflare-sorkers-google-oauth`.
+1. Clone this template: `wrangler generate [a name] https://github.com/jazcarate/cloudflare-sorkers-google-oauth`.
 1. Update the worker's secrets with the ones generated 👆:
    - `wrangler secret put CLIENT_ID [your client id]`
    - `wrangler secret put CLIENT_SECRET [your client secret]`
