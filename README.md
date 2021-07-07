@@ -2,41 +2,45 @@
 
 This is a companion repository for the blogpost at [Apimhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/).
 
+In the blogpost, we go though the code that OAuths a user and uses a Google API for that user.
+We'll be developing this app that lists, based on a query, the files in that user's Google Drive. Like so:
+
+![Result — Design is my passion](./docs/result.png)
+
 ## One picture summary
 ![Sequence of requests](./docs/sequence_of_requests.svg)
 
 <details>
   <summary>Generated with <a href="https://sequencediagram.org/" target="_blank" rel="noopener noreferrer">sequencediagram.org</a></summary>
-    ```
-    title Sequence of requests
+  <pre><code>title Sequence of requests
 
-    Client->Cloudflare Worker: GET /
-    note left of Cloudflare Worker: The client is unauthenticated
-    Cloudflare Worker-->Client: Redirect to Google Sign in
-    Client->Google API: Ask for permission
-    Google API-->Client: Prompt to sign in
-    Client->Google API: Grant permissions
-    activate Google API
-    note left of Google API: Google now\nhas a session\nfor the user
-    Google API-->Client: Go back to the Cloudflare Worker with a `token`
-    Client->Cloudflare Worker: GET /auth with a `token`
-    activate Cloudflare Worker
-    note left of Cloudflare Worker: An auth is stored in the KV with the code
-    Cloudflare Worker-->Client: Go back to the original request with the auth cookie
-    Client->Cloudflare Worker: GET /
-    note left of Cloudflare Worker: Now the client is autenticated
-    Cloudflare Worker->Google API: Get files
-    Google API-->Cloudflare Worker: A list of files
-    Cloudflare Worker-->Client: An HTML with a list of files
-    expandable− logout
-    Client->Cloudflare Worker: GET /logout
-    Cloudflare Worker->Google API: Logout
-    deactivate Google API
-    Google API-->Cloudflare Worker: OK
-    deactivate Cloudflare Worker
-    Cloudflare Worker-->Client: OK
-    end
-    ```
+Client->Cloudflare Worker: GET /
+note left of Cloudflare Worker: The client is unauthenticated
+Cloudflare Worker-->Client: Redirect to Google Sign in
+Client->Google API: Ask for permission
+Google API-->Client: Prompt to sign in
+Client->Google API: Grant permissions
+activate Google API
+note left of Google API: Google now\nhas a session\nfor the user
+Google API-->Client: Go back to the Cloudflare Worker with a `token`
+Client->Cloudflare Worker: GET /auth with a `token`
+activate Cloudflare Worker
+note left of Cloudflare Worker: An auth is stored in the KV with the code
+Cloudflare Worker-->Client: Go back to the original request with the auth cookie
+Client->Cloudflare Worker: GET /
+note left of Cloudflare Worker: Now the client is autenticated
+Cloudflare Worker->Google API: Get files
+Google API-->Cloudflare Worker: A list of files
+Cloudflare Worker-->Client: An HTML with a list of files
+expandable− logout
+Client->Cloudflare Worker: GET /logout
+Cloudflare Worker->Google API: Logout
+deactivate Google API
+Google API-->Cloudflare Worker: OK
+deactivate Cloudflare Worker
+Cloudflare Worker-->Client: OK
+end
+  </code></pre>
 </details>
 
 A more detail explanation of how Google Sign in should behave can be found in Google's docs: [Using OAuth 2.0 for Web Server Applications](https://developers.google.com/identity/protocols/oauth2/web-server).
@@ -51,7 +55,7 @@ A more detail explanation of how Google Sign in should behave can be found in Go
 
 ### Setup wrangler
 
-1. Clone this template: `wrangler generate [a name] https://github.com/jazcarate/cloudflare-sorkers-google-oauth`.
+1. Clone this template: `wrangler generate [a name] https://github.com/jazcarate/cloudflare-worker-google-oauth`.
 1. Update the worker's secrets with the ones generated 👆:
    - `wrangler secret put CLIENT_ID [your client id]`
    - `wrangler secret put CLIENT_SECRET [your client secret]`
@@ -77,6 +81,9 @@ Once the requirements are fullfiled, simply run `npm run dev`.
 
 ## Testing
 Rn `npm test` for jest tests.
+
+## Publishing
+Run `npm run publish` to lint, build and publish to your Cloudflare Worker!
 
 #### ⚠️ Caveats
 
