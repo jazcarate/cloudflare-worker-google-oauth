@@ -135,16 +135,16 @@ export default function (
     if (!token) return login(env, google, url)
 
     switch (url.pathname) {
-      case '/logout': {
-        await removeToken(token)
-        await remove(auth)
-        return new Response('Loged out', {
-          headers: setCookie('deleted', EXPIRED),
-        })
-      }
       case '/': {
         const files = await listDriveFiles(token, url.searchParams.get('q'))
         return render(files)
+      }
+      case '/logout': {
+        event.waitUntil(Promise.allSettled([removeToken(token), remove(auth)]))
+
+        return new Response('Loged out', {
+          headers: setCookie('deleted', EXPIRED),
+        })
       }
       default:
         console.log('Not found', url.pathname)

@@ -1,8 +1,8 @@
 # ( ◕◡◕)っ Cloudflare Workers Google OAuth
 
-This is a companion repository for the blogpost at [Apimhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/).
+This is a companion repository for the blog post at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/).
 
-In the blogpost, we go though the code that OAuths a user and uses a Google API for that user.
+In the blog post, we go though the code that OAuth-s a user and uses a Google API for that user.
 We'll be developing this app that lists, based on a query, the files in that user's Google Drive. Like so:
 
 ![Result — Design is my passion](./docs/result.png)
@@ -61,23 +61,26 @@ A more detail explanation of how Google Sign in should behave can be found in Go
    - `wrangler secret put CLIENT_SECRET [your client secret]`
 1. Create a `KV` namespace: `wrangler kv:namespace create "authTokens"` and update the `wrangler.toml` accordingly.
 
-## Ideas to grow this projecta
-If you woudl like to use this setups as a starting point to develop interesting things; I recomend trying out one (or all!) of this imrovements:
+## Ideas to grow this project
+If you would like to use this setups as a starting point to develop interesting things; I recommend trying out one (or all!) of this improvements:
 
 - Create a middleware pattern to deaal with authenticated and unauthenticated endpoints
 - Serve static content, either with Cloudflare Sites, or reading local files in a Worker. A default path could be implemented to serve files in `public/` folder.
 - Improve the rendered HTML with a template library, or roll up your own!
+- Use another Google API from [the list](https://developers.google.com/workspace/products).
 
 
-## Glosary
-Thoughout this project there are two somewhat similar, but distincts concepts:
+## Glossary
+Throughout this project there are two somewhat similar, but distincts concepts:
  - `token`: Is the authentication method for Google
  - `auth`: Is the authentication method for this Worker.
 
 The app deals with both, in very different ways; and it is the `KV` that provides a one way transformation between `auth` to `token`.
  
 ## Developing
-Once the requirements are fullfiled, simply run `npm run dev`.
+Once the requirements are fulfilled, simply run `npm run dev`.
+
+The server will default to running at [127.0.0.1:8787](http://127.0.0.1:8787/).
 
 ## Testing
 Rn `npm test` for jest tests.
