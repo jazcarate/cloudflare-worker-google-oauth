@@ -363,7 +363,7 @@ expect.extend({
         pass: false,
         message: () =>
           'Expected `scope`:\n' +
-          '  to be google drive metadaat readonly\n' +
+          '  to be google drive metadata readonly\n' +
           'Received:\n' +
           '  "' +
           oauthParams.scope +
