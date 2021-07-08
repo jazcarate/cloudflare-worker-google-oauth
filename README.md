@@ -77,6 +77,9 @@ Throughout this project there are two somewhat similar, but distincts concepts:
 
 The app deals with both, in very different ways; and it is the `KV` that provides a one way transformation between `auth` to `token`.
  
+## Contributing
+If you think that you can improve the code, or the explanation; feel free to drop a pull request or a comment; but please keep in mind that the purpose of this is educational.
+
 ## Developing
 Once the requirements are fulfilled, simply run `npm run dev`.
 
