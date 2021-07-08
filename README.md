@@ -23,7 +23,9 @@ Client->Google API: Grant permissions
 activate Google API
 note left of Google API: Google now\nhas a session\nfor the user
 Google API-->Client: Go back to the Cloudflare Worker with a `token`
-Client->Cloudflare Worker: GET /auth with a `token`
+Client->Cloudflare Worker: GET /auth with a `code`
+Cloudflare Worker->Google API: Exchange `code` for a `token`
+Google API-->Cloudflare Worker: a token
 activate Cloudflare Worker
 note left of Cloudflare Worker: An auth is stored in the KV with the code
 Cloudflare Worker-->Client: Go back to the original request with the auth cookie
