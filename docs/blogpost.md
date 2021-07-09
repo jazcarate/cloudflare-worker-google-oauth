@@ -1,12 +1,12 @@
 _The original can be found at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/)._
 
 # Implementing Google OAuth to use Google API in Cloudflare Workers
-Recently I had the opportunity to build a small application that needed to authenticate and authorize a user using Google's sign in mechanism, and requests on their behalf data from a Google API.
+Recently I had the opportunity to build a small application that needed to authenticate and authorize a user using Google's sign-in mechanism, and requests on their behalf data from a Google API.
 
 I choose to implement this as a Cloudflare Worker as a [serverless compute service](https://www.cloudflare.com/learning/serverless/what-is-serverless/) leveraging [Cloudflare key-value storage (KV)](https://developers.cloudflare.com/workers/learning/how-kv-works) for session storage. The tooling from Cloudflare ([`wrangler`](https://developers.cloudflare.com/workers/cli-wrangler)) has evolved nicely since my first attempt at Cloudflare Workers, so I thought it was a high time that I gave it another try.
 
-As any good software engineer I started searching for any repository I could use a template to wire up Google OAuth easily.
-But I failed to find anything that would play nicely with Cloudflare Webworker, or had some proper documentation / tests, or had a decent quality to it. So in this blog post (and in the companion GitHub repository [jazcarate/cloudflare-worker-google-oauth](https://github.com/jazcarate/cloudflare-worker-google-oauth)) I want to document, explain and go over some interesting decisions so someone just like me would have this to springboard their development.
+As any good software engineer would, I started searching for any repository I could use a template to wire up Google OAuth easily.
+But I failed to find anything that would play nicely with Cloudflare Web worker, or had some proper documentation/tests, or had a decent quality to it. So in this blog post (and in the companion GitHub repository [jazcarate/cloudflare-worker-google-oauth](https://github.com/jazcarate/cloudflare-worker-google-oauth)), I want to document, explain and go over some interesting decisions so someone just like me would have this to springboard their development.
 
 That being said, feel free to _yoink_ any or all of the code from the [repo](https://github.com/jazcarate/cloudflare-worker-google-oauth).
 
@@ -15,10 +15,10 @@ First of all, this is what we'll develop: An app that can display and filter a u
 
 ![Result — Design is my passion](./result.png)
 
-I choose Google's Drive listing API as an excuse. Everything we'll see from now on can be easily changed to use any of the [myriad of Google API](https://developers.google.com/workspace/products), as they all require roughly the same authentication and setup.
+I choose Google's Drive listing API as an excuse. Everything we'll see from now on can be easily changed to use any of the [myriad of Google APIs](https://developers.google.com/workspace/products), as they all require roughly the same authentication and setup.
 
 ## Structure and Systems
-In order to decouple the logic from external sources *such as Google), the project is best understood as a slim entry point `index.ts`, the core business logic in the handling method (`handler.ts`) and every external dependency in the `lib/` folder.
+To decouple the logic from external sources *such as Google), the project is best understood as a slim entry point `index.ts`, the core business logic in the handling method (`handler.ts`), and every external dependency in the `lib/` folder.
 
 The main interface from `handler.ts` is a function that [injects](https://en.wikipedia.org/wiki/Dependency_injection) all the systems
 ```ts
@@ -36,7 +36,7 @@ export default function (
 
 ```
 
-This no only helps separate concerns, but allows us to mock external dependencies in the tests.
+This not only helps separate concerns but allows us to mock external dependencies in the tests.
 
 ### Initial request
 Once we have all systems initialized, we do match if the request is an `/auth` callback. We'll come back to this section later.
@@ -48,13 +48,13 @@ const cookies = request.headers.get('Cookie')
 if (!cookies) return login(env, google, url)
 ```
 
-Or of they have cookies, but not the one we care (`auth`)
+Or if they have cookies, but not the one we care (`auth`)
 ```ts
 const auth = findCookie(AUTH_COOKIE, cookies)
 if (!auth) return login(env, google, url)
 ```
 
-Or the KV does not have a entry for that auth cookie (either because it has expired, or that the client is malicious and trying to guess)
+Or the KV does not have an entry for that auth cookie (either because it has expired, or that the client is malicious and trying to guess)
 ```ts
 const token = await get(auth)
 if (!token) return login(env, google, url)
@@ -101,7 +101,7 @@ const resp = await response.json()
 if (resp.error) throw new Error(JSON.stringify(resp.error))
 ```
 
-Once Google answers a list of files, then it is just a matter of rendering them. I decided to keep the rendering simple, and inline the whole HTML; but this can be easily adapted to return a JSON, or use a proper template engine. I'll leave this as a exercise for the reader.
+Once Google answers a list of files, then it is just a matter of rendering them. I decided to keep the rendering simple, and inline the whole HTML; but this can be easily adapted to return a JSON, or use a proper template engine. I'll leave this as an exercise for the reader.
 
 
 #### Logout
@@ -123,7 +123,7 @@ return new Response('Not found', { status: 404 })
 ```
 
 ### Callback
-Going back to the `/auth` request; this needs no authentication (as we are in the process of creating it). So I just check for the contract that [Google sign in documents](https://developers.google.com/identity/protocols/oauth2/web-server#sample-oauth-2.0-server-response). 
+Going back to the `/auth` request; this needs no authentication (as we are in the process of creating it). So I just check for the contract that [Google sign-in documents](https://developers.google.com/identity/protocols/oauth2/web-server#sample-oauth-2.0-server-response). 
 The query params has no errors
 ```ts
 const error = url.searchParams.get('error')
@@ -179,18 +179,18 @@ return redirect(
 ```
 
 ## Other systems
-The systems in the `lib/` folder are quite straightforward, and can be divided in two subgroups conceptually:
+The systems in the `lib/` folder are quite straightforward, and can be divided into two subgroups conceptually:
 
 ### Cloudflare enhanced dependencies
 
-As this application is running in CloudflareWorkers, both the real environment in the cloud, and the dev environment generated by `wrangler dev` (or `npm run dev`) injects some variables into the global scope. These variables are typed in the `bindings.d.ts` file; and are generated by steps 2 and 3 from [README.md#Setup wrangler](https://github.com/jazcarate/cloudflare-worker-google-oauth#setup-wrangler).
+As this application is running in CloudflareWorkers, both the real environment in the cloud and the dev environment generated by `wrangler dev` (or `npm run dev`) injects some variables into the global scope. These variables are typed in the `bindings.d.ts` file; and are generated by steps 2 and 3 from [README.md#Setup wrangler](https://github.com/jazcarate/cloudflare-worker-google-oauth#setup-wrangler).
 
-- **KV** module uses the global `authTokens` variable that Cloudflare Worker injects into the worker. More information about how KV work can be fond [here](https://developers.cloudflare.com/workers/learning/how-kv-works).
+- **KV** module uses the global `authTokens` variable that Cloudflare Worker injects into the worker. More information about how KV work can be found [here](https://developers.cloudflare.com/workers/learning/how-kv-works).
 - **Env** module keeps the environment injectable. Even though we could use the global variables _(`CLIENT_ID` and `CLIENT_SECRET`)_ injected to the web worker, this approach allows me to test the `handler` without having to re-wire global variables; that is a pain.
 
 ### Utils
 And some other systems that are not Cloudflare Worker dependant, but more like utility functions, grouped by their specific domain.
 
-- **http** module has some utils to parse the Cookies header format, and build a `302 Redirect` response.
+- **http** module has some utils to parse the Cookies header format and build a `302 Redirect` response.
 - **Google** module has a types API using just `fetch`.
 - **Crypto** module is a small utility to use the `crypto` API to generate a secure-random string.
