@@ -74,7 +74,8 @@ If you would like to use this setups as a starting point to develop interesting 
 
 ## Glossary
 Throughout this project there are two somewhat similar, but distincts concepts:
- - `token`: Is the authentication method for Google
+ - Google's `code`: Is a one time code that is quickly exchanged with Google for a `token` 👇.
+ - `token`: Is the authentication method for Google.
  - `auth`: Is the authentication method for this Worker.
 
 The app deals with both, in very different ways; and it is the `KV` that provides a one way transformation between `auth` to `token`.
