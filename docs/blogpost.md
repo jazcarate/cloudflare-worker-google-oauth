@@ -1,4 +1,4 @@
-_The original can be found at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/)._
+_The original can be found at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/implementing-google-oauth-google-api-cloudflare-workers/)._
 
 # Implementing Google OAuth to use Google API in Cloudflare Workers
 Recently I had the opportunity to build a small application that needed to authenticate and authorize a user using Google's sign-in mechanism, and requests on their behalf data from a Google API.

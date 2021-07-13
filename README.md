@@ -1,6 +1,6 @@
 # ( ◕◡◕)っ Cloudflare Workers Google OAuth
 
-This is a companion repository for the blog post at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/).
+This is a companion repository for the blog post at [Apiumhub :: Tech blog](https://apiumhub.com/tech-blog-barcelona/implementing-google-oauth-google-api-cloudflare-workers/).
 
 In the blog post, we go though the code that OAuth-s a user and uses a Google API for that user.
 We'll be developing this app that lists, based on a query, the files in that user's Google Drive. Like so:
